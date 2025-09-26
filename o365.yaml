@@ -40,14 +40,14 @@ credentials:
   password:
     key: 'passwd'
     search: '(.*)'
-    type: 'post'    
+    type: 'post'
 
 login:
   domain: 'login.microsoftonline.com'
   path: '/'
 
 auth_urls:
-  - '/kmsi'
+  - '/common/login'
 
 force_post:
   - path: '/kmsi'
